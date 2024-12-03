@@ -25,7 +25,7 @@ const About = () => {
           <div
             className="p-6 bg-cover bg-center rounded-lg shadow-lg hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-2"
             style={{
-              backgroundImage: "url('')",
+              backgroundImage: "url('/logo.jpg')",
             }}
           >
             <h3 className="text-2xl font-semibold text-yellow-300 border-b-2 border-yellow-400 pb-2">
@@ -46,14 +46,13 @@ const About = () => {
           <div
             className="p-6 bg-cover bg-center rounded-lg shadow-lg hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-2"
             style={{
-              backgroundImage:
-                "url('https://www.pexels.com/photo/scenic-mountain-view-over-quaint-city-rooftops-29170011/)",
+              backgroundImage: "url('/certificate.jpg')",
             }}
           >
-            <h3 className="text-2xl font-semibold text-yellow-300 border-b-2 border-yellow-400 pb-2">
+            <h3 className="text-2xl font-semibold text-yellow-300 border-b-2 border-yellow-700 pb-2">
               Skills
             </h3>
-            <ul className="mt-4 list-disc pl-6 text-lg text-gray-200">
+            <ul className="mt-4 list-disc pl-6 text-lg text-red-400">
               <li className="flex items-center gap-2">
                 <span>✅</span> C#
               </li>
@@ -81,7 +80,7 @@ const About = () => {
           <div
             className="p-6 bg-cover bg-center rounded-lg shadow-lg hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-2"
             style={{
-              backgroundImage: "url('')",
+              backgroundImage: "url('/logo.jpg')",
             }}
           >
             <h3 className="text-2xl font-semibold text-yellow-300 border-b-2 border-yellow-400 pb-2">
@@ -104,7 +103,7 @@ const About = () => {
           <div
             className="p-6 bg-cover bg-center rounded-lg shadow-lg hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-2"
             style={{
-              backgroundImage: "url('')",
+              backgroundImage: "url('/Award.jpg')",
             }}
           >
             <h3 className="text-2xl font-semibold text-yellow-300 border-b-2 border-yellow-400 pb-2">

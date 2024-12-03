@@ -66,7 +66,7 @@ const Contact = () => {
             <p className="text-gray-600">Or connect with me:</p>
             <div className="flex justify-center space-x-6 mt-4">
               <a
-                href="https://linkedin.com/in/shiv-prakash"
+                href="https://www.linkedin.com/in/shiv-prakash-b7b6b024b/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-500 hover:underline"
