@@ -1,20 +1,16 @@
-import Head from "next/head";
-import HomeLanding from "@/components/Home/HomeLanding";
+import Hero from "@/components/Home/Hero";
+import Navbar from "@/components/Home/Navbar";
+import Slider from "@/components/Home/Slider";
+import About from "@/components/About";
+import Projects from "@/components/Projects";
 
-const Home = () => {
+export default function Home() {
   return (
-    <div>
-      <Head>
-        <title>Home Page</title>
-        <meta name="description" content="Home page content" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main>
-        <HomeLanding />
-      </main>
-    </div>
+    <>
+      <Navbar />
+      {/* <Slider /> */}
+      <Hero />
+      {/* <About /> */}
+    </>
   );
-};
-
-export default Home;
+}
