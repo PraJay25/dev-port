@@ -8,7 +8,7 @@ const Hero = () => {
   return (
     <section
       className="relative bg-cover bg-center text-black text-center py-20"
-      style={{ backgroundImage: "url('/logo.jpg')" }}
+      style={{ backgroundImage: "url('/logo.png')" }}
     >
       {/* Transparent overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>

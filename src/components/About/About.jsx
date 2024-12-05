@@ -9,7 +9,7 @@ const About = () => {
   return (
     <section
       id="about"
-      className={`${poppins.className} relative py-16 text-white bg-cover bg-center bg-[url('https://images.pexels.com/photos/1181354/pexels-photo-1181354.jpeg')]`}
+      className={`${poppins.className} relative py-16 text-white bg-cover bg-center  backgroundImage: "url('/bg.jpg')",`}
     >
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900 to-blue-500 opacity-80"></div>
@@ -25,7 +25,7 @@ const About = () => {
           <div
             className="p-6 bg-cover bg-center rounded-lg shadow-lg hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-2"
             style={{
-              backgroundImage: "url('/logo.jpg')",
+              backgroundImage: "url('/logo.png')",
             }}
           >
             <h3 className="text-2xl font-semibold text-yellow-300 border-b-2 border-yellow-400 pb-2">
@@ -80,13 +80,13 @@ const About = () => {
           <div
             className="p-6 bg-cover bg-center rounded-lg shadow-lg hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-2"
             style={{
-              backgroundImage: "url('/logo.jpg')",
+              backgroundImage: "url('/images.png')",
             }}
           >
             <h3 className="text-2xl font-semibold text-yellow-300 border-b-2 border-yellow-400 pb-2">
               Certifications
             </h3>
-            <ul className="mt-4 list-disc pl-6 text-lg text-gray-200">
+            <ul className="mt-4 list-disc pl-6 text-lg text-blue-700">
               <li className="flex items-center gap-2">
                 <span>🏅</span> Microsoft Azure Fundamentals
               </li>

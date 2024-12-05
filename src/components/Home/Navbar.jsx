@@ -1,7 +1,7 @@
 // components/Navbar.js
 import Image from "next/image";
 import Link from "next/link";
-import About from "../About";
+import About from "../About/About";
 
 const Navbar = () => {
   return (
@@ -9,7 +9,7 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
         {/* Logo */}
         <div className="flex items-center">
-          <Image src="/logo.jpg" alt="SP Logo" width={40} height={40} />
+          <Image src="/logo.png" alt="SP Logo" width={40} height={40} />
           <span className="ml-2 text-xl font-bold">Shiv Prakash</span>
         </div>
         {/* Navigation Links */}
