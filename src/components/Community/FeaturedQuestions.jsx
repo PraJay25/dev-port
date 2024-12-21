@@ -12,22 +12,23 @@ import {
   AdjustmentsVerticalIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { commentsData } from "@/data/commentsData";
+import featuredQuestions from "@/data/featuredQuestions";
+import { useQuestions } from "../Context/QuestionsContext";
 
-const FeaturedQuestions = ({ questions }) => {
+const FeaturedQuestions = () => {
+  const { questions, setQuestions } = useQuestions();
+
   const [voteCounts, setVoteCounts] = useState(
     questions.map((question) => ({
-      upvotes: question.upvotes || 0,
+      upvotes: question.upvotes || 2000,
       downvotes: question.downvotes || 0,
       hasUpvoted: false,
-      comments: question.comments || 0,
-      isFollowing: false,
     }))
   );
+  const [userData, setUserData] = useState(featuredQuestions);
 
   const [expandedQuestion, setExpandedQuestion] = useState(null);
-  const [answerPopupVisible, setAnswerPopupVisible] = useState(null);
-  const [commentPopupVisible, setCommentPopupVisible] = useState(null);
-  const [currentAnswer, setCurrentAnswer] = useState("");
 
   const WORD_LIMIT = 3000;
 
@@ -60,26 +61,75 @@ const FeaturedQuestions = ({ questions }) => {
     );
   };
 
+  const [answerPopupVisible, setAnswerPopupVisible] = useState(null);
+  const [newAnswer, setNewAnswer] = useState("");
+
   const handleOpenAnswerPopup = (index) => {
     setAnswerPopupVisible(index);
   };
 
   const handleCloseAnswerPopup = () => {
     setAnswerPopupVisible(null);
-    setCurrentAnswer("");
   };
 
   const handleSubmitAnswer = (index) => {
-    console.log(`Answer submitted for question #${index}:`, currentAnswer);
-    handleCloseAnswerPopup();
+    if (!newAnswer.trim()) return;
+
+    // Update question data with new answer
+    const updatedQuestions = [...questions];
+    updatedQuestions[index] = {
+      ...updatedQuestions[index],
+      topAnswer: newAnswer,
+      askedByUser: "shiv", // Example new commenter (replace dynamically as needed)
+      userImage: "https://picsum.photos/100/120/?random", // Example image
+      userLevel: updatedQuestions[index].userLevel + 1, // Increment level for demonstration
+    };
+    setQuestions(updatedQuestions);
+    setNewAnswer(""); // Clear the textarea
+    setAnswerPopupVisible(null); // Close the popup
   };
 
+  const [commentPopupVisible, setCommentPopupVisible] = useState(null);
+
   const handleOpenCommentPopup = (index) => {
-    setCommentPopupVisible(index);
+    if (commentPopupVisible === index) {
+      setCommentPopupVisible(null);
+    } else {
+      setCommentPopupVisible(index);
+    }
   };
 
   const handleCloseCommentPopup = () => {
     setCommentPopupVisible(null);
+  };
+
+  const [comments, setComments] = useState(commentsData);
+
+  const [newComment, setNewComment] = useState("");
+  const [showCommentsPopup, setShowCommentsPopup] = useState(false);
+
+  const handleAddComment = () => {
+    if (!newComment.trim()) return;
+
+    const newCommentData = {
+      askedByUser: "shiv", // Example new commenter (replace dynamically as needed)
+      userImage: "https://picsum.photos/100/120/?random", // Example image
+      commentText: newComment,
+      commentedDate: new Date().toLocaleString(),
+    };
+
+    // Add the new comment to the top of the list
+    setComments([newCommentData, ...comments]);
+
+    // Update static user data
+    setUserData({
+      ...userData,
+      askedByUser: newCommentData.askedByUser,
+      userImage: newCommentData.userImage,
+    });
+
+    // Clear the textarea
+    setNewComment("");
   };
 
   return (
@@ -114,10 +164,11 @@ const FeaturedQuestions = ({ questions }) => {
 
             {/* Question and Answer */}
             <div>
-              <p className="text-sm font-semibold text-blue-950 cursor-pointer hover:underline">
-                {question.question}
-              </p>
-
+              <Link href="/responses">
+                <p className="text-sm font-semibold text-blue-950 cursor-pointer hover:underline">
+                  {question.question}
+                </p>
+              </Link>
               <p
                 className="text-xs text-gray-700 mt-2"
                 dangerouslySetInnerHTML={{
@@ -207,30 +258,53 @@ const FeaturedQuestions = ({ questions }) => {
                 <span>{question.views} Views</span>
               </div>
             </div>
-
             {/* Comment Popup */}
             {commentPopupVisible === index && (
               <div
-                className="absolute left-1/2 transform -translate-x-1/2 top-full bg-white shadow-lg rounded-md p-4 mt-2 z-50 w-80"
-                style={{ border: "1px solid #e2e8f0" }}
+                className="absolute bg-white border rounded-lg shadow mt-2 p-4 w-full"
+                style={{ zIndex: 1000 }}
               >
-                <textarea
-                  className="w-full h-20 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  placeholder="Write your comment..."
-                ></textarea>
-                <div className="flex justify-end space-x-2 mt-2">
+                {/* Add Comment Section */}
+                <div className="space-y-4">
+                  <textarea
+                    className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Write your comment..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                  />
                   <button
-                    className="bg-gray-300 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-400"
-                    onClick={handleCloseCommentPopup}
+                    className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+                    onClick={handleAddComment}
                   >
-                    Cancel
+                    Add Comment
                   </button>
-                  <button
-                    className="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600"
-                    onClick={handleCloseCommentPopup}
-                  >
-                    Submit
-                  </button>
+                </div>
+
+                {/* Display Comments Section */}
+                <div className="mt-4 space-y-4">
+                  {comments.map((comment, index) => (
+                    <div
+                      key={index}
+                      className="bg-gray-50 p-4 rounded-lg shadow flex items-start space-x-4"
+                    >
+                      <img
+                        src={comment.userImage}
+                        alt={comment.askedByUser}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                      <div>
+                        <h3 className="text-sm font-bold">
+                          {comment.askedByUser}
+                        </h3>
+                        <p className="text-xs text-gray-500">
+                          {comment.commentedDate}
+                        </p>
+                        <p className="mt-2 text-sm text-gray-700">
+                          {comment.commentText}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -242,18 +316,44 @@ const FeaturedQuestions = ({ questions }) => {
                 onClick={handleCloseAnswerPopup}
               >
                 <div
-                  className="bg-white p-6 rounded-md w-1/3 shadow-lg"
+                  className="bg-white p-6 rounded-md w-4/5 max-w-md shadow-lg"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <h3 className="text-lg font-bold text-gray-700">
                     Answer the Question
                   </h3>
+                  <p className="mt-4 text-sm font-medium text-gray-600">
+                    {question.question}
+                  </p>
+                  <div className="flex items-center mt-4">
+                    {question.userImage ? (
+                      <img
+                        src={question.userImage}
+                        alt={question.askedByUser || "Anonymous"}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                        <UserMinusIcon className="w-6 h-6 text-gray-400" />
+                      </div>
+                    )}
+                    <div className="ml-3 text-sm">
+                      <p className="font-semibold text-gray-700">
+                        {question.askedByUser || "Anonymous"}
+                      </p>
+                      {question.askedByUser && (
+                        <p className="text-gray-500">
+                          Level {question.userLevel} |{" "}
+                          {question.userPoints.toLocaleString()} points
+                        </p>
+                      )}
+                    </div>
+                  </div>
                   <textarea
-                    className="w-full mt-4 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    placeholder="Write your answer (Max 3000 words)..."
-                    value={currentAnswer}
-                    onChange={(e) => setCurrentAnswer(e.target.value)}
-                    maxLength={WORD_LIMIT}
+                    className="w-full mt-4 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 resize-vertical max-h-40"
+                    placeholder="Write your answer..."
+                    value={newAnswer}
+                    onChange={(e) => setNewAnswer(e.target.value)}
                   ></textarea>
                   <div className="flex justify-end space-x-2 mt-4">
                     <button
