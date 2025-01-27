@@ -2,6 +2,10 @@ export const answersData = [
   {
     question:
       "Explain the principle of least privilege and its importance in cybersecurity.",
+    askedBy: {
+      name: "Sophia",
+      userImage: "https://picsum.photos/100/120",
+    },
     answers: [
       {
         answeredByUser: "Alice",
@@ -29,6 +33,10 @@ export const answersData = [
   {
     question:
       "Define social engineering in the context of cybersecurity and provide an example.",
+    askedBy: {
+      name: "James",
+      userImage: "https://picsum.photos/100/121",
+    },
     answers: [
       {
         answeredByUser: "Alice",
@@ -56,6 +64,10 @@ export const answersData = [
   {
     question:
       "What is a Virtual Private Network (VPN) and how does it enhance security?",
+    askedBy: {
+      name: "Emily",
+      userImage: "https://picsum.photos/100/122",
+    },
     answers: [
       {
         answeredByUser: "Frank",
@@ -83,6 +95,10 @@ export const answersData = [
   {
     question:
       "Describe what encryption is and why it is important for data security.",
+    askedBy: {
+      name: "Michael",
+      userImage: "https://picsum.photos/100/123",
+    },
     answers: [
       {
         answeredByUser: "Ivy",
@@ -109,6 +125,10 @@ export const answersData = [
   },
   {
     question: "What is phishing and how can it be prevented?",
+    askedBy: {
+      name: "Olivia",
+      userImage: "https://picsum.photos/100/124",
+    },
     answers: [
       {
         answeredByUser: "Liam",

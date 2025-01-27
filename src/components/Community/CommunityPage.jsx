@@ -9,7 +9,7 @@ import topics from "@/data/topics";
 import otherQuestions from "@/data/otherQuestions";
 import featuredQuestions from "@/data/featuredQuestions";
 import { useState } from "react";
-import { QuestionsProvider } from "../Context/QuestionsContext";
+import { QuestionsProvider } from "../Hook/QuestionsContext";
 
 import {
   PencilSquareIcon,

@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import { commentsData } from "@/data/commentsData";
 import featuredQuestions from "@/data/featuredQuestions";
-import { useQuestions } from "../Context/QuestionsContext";
+import { useQuestions } from "../Hook/QuestionsContext";
 
 const FeaturedQuestions = () => {
   const { questions, setQuestions } = useQuestions();
@@ -66,6 +66,7 @@ const FeaturedQuestions = () => {
 
   const handleOpenAnswerPopup = (index) => {
     setAnswerPopupVisible(index);
+    setCommentVisible(null); // Close comment popup
   };
 
   const handleCloseAnswerPopup = () => {
@@ -89,47 +90,124 @@ const FeaturedQuestions = () => {
     setAnswerPopupVisible(null); // Close the popup
   };
 
-  const [commentPopupVisible, setCommentPopupVisible] = useState(null);
+  const CommentsSection = ({ questionId }) => {
+    // Find the comments for the current question using the questionId
+    const questionComments =
+      commentsData.find((item) => item.questionId === questionId)?.comments ||
+      [];
 
-  const handleOpenCommentPopup = (index) => {
-    if (commentPopupVisible === index) {
-      setCommentPopupVisible(null);
+    // State to manage comments dynamically
+    const [comments, setComments] = useState(questionComments);
+    const [newComment, setNewComment] = useState("");
+
+    // Add new comment function
+    const addComment = () => {
+      if (!newComment.trim()) {
+        alert("Comment cannot be empty!");
+        return;
+      }
+
+      const newCommentData = {
+        askedByUser: "Current User", // Replace with actual user name if available
+        userImage: "https://picsum.photos/100/116", // Replace with logged-in user's image
+        commentText: newComment,
+        commentedDate: new Date().toLocaleString(), // Current date and time
+      };
+
+      // Update comments state
+      setComments([...comments, newCommentData]);
+      setNewComment(""); // Clear the input field
+    };
+
+    return (
+      <div className="bg-gray-50 rounded-lg p-4 shadow-sm mt-4">
+        {/* Render comments */}
+        {comments.map((comment, index) => (
+          <div
+            key={index}
+            className="flex items-start gap-3 border-b py-3 last:border-none"
+          >
+            <img
+              src={comment.userImage}
+              alt="User"
+              className="w-8 h-8 rounded-full border border-gray-300"
+            />
+            <div>
+              <p className="text-gray-700 font-semibold text-sm">
+                {comment.askedByUser}
+              </p>
+              <p className="text-gray-500 text-xs">{comment.commentText}</p>
+              <p className="text-gray-400 text-xs mt-1">
+                {comment.commentedDate}
+              </p>
+            </div>
+          </div>
+        ))}
+
+        {/* Add new comment form */}
+        <div className="mt-4">
+          <input
+            type="text"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="Write a comment..."
+            className="w-full p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+          />
+          <button
+            onClick={addComment}
+            className="mt-2 bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 transition"
+          >
+            Add Comment
+          </button>
+        </div>
+      </div>
+    );
+  };
+  const [commentVisible, setCommentVisible] = useState(null);
+
+  const handleToggleComments = (index) => {
+    setCommentVisible(commentVisible === index ? null : index);
+  };
+
+  // State for view counts
+  const [viewCounts, setViewCounts] = useState(questions.map(() => 0));
+
+  const handleHover = (index, isHovering) => {
+    console.log(`Hover event on question ${index}: ${isHovering}`);
+    if (isHovering) {
+      console.log(`Starting timer for question ${index}`);
+      const timer = setTimeout(() => {
+        console.log(`Incrementing view count for question ${index}`);
+        incrementViewCount(index);
+      }, 3000);
+
+      setQuestions((prevQuestions) =>
+        prevQuestions.map((q, i) =>
+          i === index ? { ...q, hoverTimer: timer } : q
+        )
+      );
     } else {
-      setCommentPopupVisible(index);
+      console.log(`Clearing timer for question ${index}`);
+      const question = questions[index];
+      if (question.hoverTimer) {
+        clearTimeout(question.hoverTimer);
+        setQuestions((prevQuestions) =>
+          prevQuestions.map((q, i) =>
+            i === index ? { ...q, hoverTimer: null } : q
+          )
+        );
+      }
     }
   };
 
-  const handleCloseCommentPopup = () => {
-    setCommentPopupVisible(null);
-  };
-
-  const [comments, setComments] = useState(commentsData);
-
-  const [newComment, setNewComment] = useState("");
-  const [showCommentsPopup, setShowCommentsPopup] = useState(false);
-
-  const handleAddComment = () => {
-    if (!newComment.trim()) return;
-
-    const newCommentData = {
-      askedByUser: "shiv", // Example new commenter (replace dynamically as needed)
-      userImage: "https://picsum.photos/100/120/?random", // Example image
-      commentText: newComment,
-      commentedDate: new Date().toLocaleString(),
-    };
-
-    // Add the new comment to the top of the list
-    setComments([newCommentData, ...comments]);
-
-    // Update static user data
-    setUserData({
-      ...userData,
-      askedByUser: newCommentData.askedByUser,
-      userImage: newCommentData.userImage,
+  // Function to increment view count
+  const incrementViewCount = (index) => {
+    setViewCounts((prev) => {
+      console.log("Updating view counts");
+      const updated = [...prev];
+      updated[index] += 1;
+      return updated;
     });
-
-    // Clear the textarea
-    setNewComment("");
   };
 
   return (
@@ -150,6 +228,8 @@ const FeaturedQuestions = () => {
           <div
             key={index}
             className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-4 md:p-6 lg:p-8 relative"
+            onMouseEnter={() => handleHover(index, true)} // Start hover logic
+            onMouseLeave={() => handleHover(index, false)} // End hover logic
           >
             {/* Follow Button */}
             <button
@@ -209,8 +289,8 @@ const FeaturedQuestions = () => {
                       </p>
                       <p className="flex items-center space-x-2">
                         <AdjustmentsVerticalIcon className="h-4 w-4 text-gray-500" />
-                        Level {question.userLevel} |{" "}
-                        {question.userPoints.toLocaleString()} points
+                        Level {question.userLevel || 1} |{" "}
+                        {question.userPoints?.toLocaleString() || "0"} points
                       </p>
                     </div>
                   </>
@@ -235,7 +315,7 @@ const FeaturedQuestions = () => {
 
               <button
                 className="flex items-center gap-1"
-                onClick={() => handleOpenCommentPopup(index)}
+                onClick={() => handleToggleComments(index)}
               >
                 <ChatBubbleBottomCenterTextIcon className="w-4 h-4" />
                 <span>{voteCounts[index].comments} Comments</span>
@@ -255,58 +335,13 @@ const FeaturedQuestions = () => {
 
               <div className="flex items-center gap-1">
                 <EyeIcon className="w-4 h-4" />
-                <span>{question.views} Views</span>
+                <span>{viewCounts[index]} Views</span>
               </div>
             </div>
-            {/* Comment Popup */}
-            {commentPopupVisible === index && (
-              <div
-                className="absolute bg-white border rounded-lg shadow mt-2 p-4 w-full"
-                style={{ zIndex: 1000 }}
-              >
-                {/* Add Comment Section */}
-                <div className="space-y-4">
-                  <textarea
-                    className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Write your comment..."
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                  />
-                  <button
-                    className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
-                    onClick={handleAddComment}
-                  >
-                    Add Comment
-                  </button>
-                </div>
 
-                {/* Display Comments Section */}
-                <div className="mt-4 space-y-4">
-                  {comments.map((comment, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-50 p-4 rounded-lg shadow flex items-start space-x-4"
-                    >
-                      <img
-                        src={comment.userImage}
-                        alt={comment.askedByUser}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                      <div>
-                        <h3 className="text-sm font-bold">
-                          {comment.askedByUser}
-                        </h3>
-                        <p className="text-xs text-gray-500">
-                          {comment.commentedDate}
-                        </p>
-                        <p className="mt-2 text-sm text-gray-700">
-                          {comment.commentText}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* Comments Section */}
+            {commentVisible === index && (
+              <CommentsSection questionId={question.questionId} />
             )}
 
             {/* Answer Popup */}

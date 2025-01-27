@@ -77,9 +77,21 @@ const Responses = () => {
             className="bg-white rounded-lg shadow-md p-6"
           >
             {/* Question Header */}
-            <h2 className="text-blue-600 text-lg font-bold border-b pb-2">
-              {questionData.question}
-            </h2>
+            <div className="flex items-center space-x-4 mb-4">
+              <img
+                src={questionData.askedBy.userImage}
+                alt={questionData.askedBy.name}
+                className="w-10 h-10 rounded-full object-cover shadow-md"
+              />
+              <div>
+                <h2 className="text-blue-600 text-lg font-bold">
+                  {questionData.question}
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Asked by {questionData.askedBy.name}
+                </p>
+              </div>
+            </div>
 
             {/* Answers Section */}
             <div className="mt-4 space-y-4">
